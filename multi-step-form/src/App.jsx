@@ -10,6 +10,7 @@ function App() {
   const [active, setActive] = useState(0)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState([1, 1, 1])
+  const [planErr, setPlanErr] = useState(false)
   const [user, setUser] = useState({
     name: '',
     email: '',
@@ -62,7 +63,14 @@ function App() {
       setError(['name', 'email', 'phone'].map(item => user[item].length))
     } else {
       setError([1, 1, 1]);
-      if (active < 3) setActive(active + 1);
+      const isErr = active === 0 ? false : active === 1 && user.plan.name.length === 0 || active === 2 && user.addons.length === 0
+      if (isErr){
+        setPlanErr(true)
+      } else {
+        setPlanErr(false)
+        if (active < 3) setActive(active + 1);
+      }
+
     }
   }
 
@@ -148,6 +156,7 @@ function App() {
               </div>
               )}
           </div>
+          {planErr && user.plan.name.length === 0 && <span className="text-StrawberryRed text-xs md:text-sm">Please select a plan</span>}
           <div className="flex gap-4 justify-center items-center p-3 bg-Magnolia rounded-md text-xs md:text-sm font-semibold">
             <span className={`${user.plan?.subscription === 'monthly' ? 'text-MarineBlue' : 'text-CoolGray' }`}>Monthly</span>
             <span className="bg-MarineBlue flex items-center justify-between w-8 p-1 rounded-xl">
@@ -181,6 +190,7 @@ function App() {
             </div>
           )
           }
+          {planErr && user.addons.length === 0 && <span className="text-StrawberryRed text-xs md:text-sm">Please select an add-on</span>}
         </div>
         :
         <div className="flex flex-col gap-4">
