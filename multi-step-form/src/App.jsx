@@ -53,6 +53,14 @@ function App() {
     {head: 'Customizable profile', liner: 'Custom theme on your profile', cost: 2},
   ]
 
+  const validEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+  const validateEmail = () => {
+    if (!user.email.match(validEmail)) return false // i.e. invalid
+    else return true // valid
+  }
+
+
   const handleChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value})
   }
@@ -61,6 +69,8 @@ function App() {
     // check that personal info is all filled in
     if (active === 0 && (user.name.length === 0 || user.email.length === 0 || user.phone.length === 0)){
       setError(['name', 'email', 'phone'].map(item => user[item].length))
+    } else if (active === 0 && !validateEmail()) {
+      setError([1, false, 1]);
     } else {
       setError([1, 1, 1]);
       const isErr = active === 0 ? false : active === 1 && user.plan.name.length === 0 || active === 2 && user.addons.length === 0
@@ -125,7 +135,7 @@ function App() {
             <div key={item.id} className="flex flex-col gap-1">
               <div className="flex justify-between items-center">
                 <label htmlFor={item.name} className="capitalize text-MarineBlue font-medium md:font-semibold text-xs md:text-sm">{item.label}</label>
-                <span className={`${error[i] === 0 ? 'flex' : 'hidden'} text-StrawberryRed font-semibold text-xs md:text-sm`}>This field is required</span>
+                <span className={`${error[i] === 0 || error[i] === false ? 'flex' : 'hidden'} text-StrawberryRed font-semibold text-xs md:text-sm`}>{error[i] === 0 ? 'This field is required' : 'Enter a valid email address'}</span>
               </div>
               <input
                 type="text"
